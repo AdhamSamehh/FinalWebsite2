@@ -170,9 +170,6 @@ server.post('/user/register', (req, res) => {
     });
 });
 
-
-
-
 //Login
 server.post('/user/login', (req, res) => {
     const { username, email, password } = req.body;
@@ -217,10 +214,7 @@ server.post('/user/login', (req, res) => {
     });
 });
 
-
-
-
-server.get('/users', verifyAdminToken, (req, res) => {
+server.get('/users', (req, res) => {
     const getusersquery = 'SELECT * FROM users'; // Make sure you reference 'users' table correctly
     db.all(getusersquery, [], (err, rows) => {
         if (err) {
@@ -235,11 +229,7 @@ server.get('/users', verifyAdminToken, (req, res) => {
 });
 
 // Add Products
-server.post('/products/add', verifyAdminToken, (req, res) => {
-    const isAdmin = req.userDetails.isAdmin;
-    if (isAdmin !== 1) {
-        return res.status(403).send("You are not authorized to add products.");
-    }
+server.post('/products/add', (req, res) => {
     const productName = req.body.productName;
     const price = parseFloat(req.body.price);
     const category = req.body.category;
@@ -249,7 +239,7 @@ server.post('/products/add', verifyAdminToken, (req, res) => {
     if (!productName || !price || !category || !stockQuantity) {
         return res.status(400).send("Product Name, Price, Category, and Stock Quantity are required.");
     }
-    const insertQuery = `INSERT INTO PRODUCTS (productName, price, category, description, stockQuantity) VALUES (?, ?, ?, ?, ?)`;
+    const insertQuery = `INSERT INTO PRODUCTS (productName, price, category, productDescription, stockQuantity) VALUES (?, ?, ?, ?, ?)`;
     db.run(insertQuery, [productName, price, category, description, stockQuantity], (err) => {
         if (err) {
             return res.status(500).send("Error adding product: " + err.message);
@@ -259,11 +249,7 @@ server.post('/products/add', verifyAdminToken, (req, res) => {
 });
 
 // List All Products
-server.get('/products', verifyToken, (req, res) => {
-    const isAdmin = req.userDetails.isAdmin;
-    if (isAdmin !== 1) {
-        return res.status(403).send("You are not authorized to view products.");
-    }
+server.get('/products', (req, res) => {
     const query = 'SELECT * FROM PRODUCTS';
     db.all(query, [], (err, rows) => {
         if (err) {
@@ -275,8 +261,9 @@ server.get('/products', verifyToken, (req, res) => {
         return res.status(200).json(rows);
     });
 });
+
 // Search for a Product by ID
-server.get('/products/search/:id', verifyToken, (req, res) => {
+server.get('/products/search/:id', (req, res) => {
     const productId = parseInt(req.params.id, 10);
     if (isNaN(productId)) {
         return res.status(400).send("Invalid product ID.");
@@ -294,7 +281,7 @@ server.get('/products/search/:id', verifyToken, (req, res) => {
 
 
 // Search for Products
-server.get('/products/search', verifyToken, (req, res) => {
+server.get('/products/search', (req, res) => {
     const { productName, category, quantity } = req.query;
     let query = `SELECT * FROM PRODUCTS WHERE 1=1`;
     if (productName) {
@@ -325,8 +312,9 @@ server.get('/products/search', verifyToken, (req, res) => {
         }
     });
 });
+
 //create orders
-server.put('/products/buyNow', verifyToken, (req, res) => {
+server.put('/products/buyNow', (req, res) => {
     const { productId, userId, quantity } = req.body;
     if (!productId || !userId || !quantity) {
         return res.status(400).send("Product ID, User ID, and Quantity are required.");
@@ -364,17 +352,6 @@ server.put('/products/buyNow', verifyToken, (req, res) => {
         });
     });
 });
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Add a Review for a Product

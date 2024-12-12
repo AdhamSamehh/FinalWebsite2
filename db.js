@@ -32,8 +32,6 @@ const createProductstable = `
 const createOrderstable = `
    CREATE TABLE IF NOT EXISTS orders (
     orderID INTEGER PRIMARY KEY AUTOINCREMENT,
-    userID INTEGER NOT NULL,
-    productID INTEGER NOT NULL,
     productsQuantity INTEGER NOT NULL,
     totalAmount INTEGER NOT NULL,
     paymentStatus INTEGER NOT NULL,
@@ -41,15 +39,6 @@ const createOrderstable = `
     FOREIGN KEY (productID) REFERENCES products(productID)
 );
 
-    )`;
-
-const createCartstable = `
-   CREATE TABLE IF NOT EXISTS carts (
-    cartID INTEGER PRIMARY KEY AUTOINCREMENT,
-    userID INTEGER FOREIGN KEY NOT NULL, 
-    productID INTEGER FOREIGN KEY NOT NULL, 
-    productsQuantity INTEGER NOT NULL,
-    totalAmount INTEGER NOT NULL, 
     )`;
 
 const createReviewstable = `
@@ -67,4 +56,4 @@ const createReviewstable = `
 
 
 //To export all tables
-module.exports = { db, createUsertable, createProductstable, createOrderstable, createCartstable, createReviewstable, createAdminstable }
+module.exports = { db, createUsertable, createProductstable, createOrderstable, createReviewstable, createAdminstable }
