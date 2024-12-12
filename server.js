@@ -326,7 +326,7 @@ server.get('/products/search', verifyToken, (req, res) => {
     });
 });
 //create orders
-server.put('/products/buy', verifyToken, (req, res) => {
+server.put('/products/buyNow', verifyToken, (req, res) => {
     const { productId, userId, quantity } = req.body;
     if (!productId || !userId || !quantity) {
         return res.status(400).send("Product ID, User ID, and Quantity are required.");
@@ -365,124 +365,16 @@ server.put('/products/buy', verifyToken, (req, res) => {
     });
 });
 
-// Add a Product to Cart
-server.post('/cart/add', verifyToken, (req, res) => {
-    const { userID, productID, productsQuantity } = req.body;
-    if (!userID || !productID || !productsQuantity) {
-        return res.status(400).send("Missing required fields.");
-    }
-    const query = `INSERT INTO cart (userID, productID, productsQuantity, totalAmount) 
-                   VALUES (?, ?, ?, ?)`;
-    const totalAmount = productsQuantity * 100; // Assuming price is 100 for simplicity
-    db.run(query, [userID, productID, productsQuantity, totalAmount], function(err) {
-        if (err) {
-            return res.status(500).send("Error adding to cart: " + err.message);
-        }
-        return res.status(201).json({
-            message: "Product added to cart successfully.",
-            cart: {
-                cartID: this.lastID,
-                userID: userID,
-                productID: productID,
-                productsQuantity: productsQuantity,
-                totalAmount: totalAmount
-            }
-        });
-    });
-});
-// View the Cart of a User
-server.get('/cart/view', verifyAdminToken, (req, res) => {
-    const { userID } = req.query;
-    if (!userID) {
-        return res.status(400).send("Missing userID.");
-    }
-    const query = `SELECT * FROM cart WHERE userID = ?`;
-    db.all(query, [userID], (err, rows) => {
-        if (err) {
-            return res.status(500).send("Error retrieving cart: " + err.message);
-        } else if (rows.length === 0) {
-            return res.status(404).send(`No cart found for user with ID ${userID}.`);
-        }
-        return res.status(200).json({ cart: rows });
-    });
-});
 
-// Update Product Quantity in Cart
-server.put('/cart/update', verifyToken, (req, res) => {
-    const { userID, productID, newQuantity } = req.body;
-    if (!userID || !productID || !newQuantity) {
-        return res.status(400).send("Missing required fields.");
-    }
 
-    const totalAmount = newQuantity * 100; // Assuming price is 100 for simplicity
 
-    const query = `UPDATE cart SET productsQuantity = ?, totalAmount = ? 
-                   WHERE userID = ? AND productID = ?`;
 
-    db.run(query, [newQuantity, totalAmount, userID, productID], function(err) {
-        if (err) {
-            return res.status(500).send("Error updating cart: " + err.message);
-        } else if (this.changes === 0) {
-            return res.status(404).send("Cart item not found.");
-        }
-        return res.status(200).json({
-            message: "Cart updated successfully.",
-            cart: {
-                userID: userID,
-                productID: productID,
-                productsQuantity: newQuantity,
-                totalAmount: totalAmount
-            }
-        });
-    });
-});
 
-// View All Carts (Admin)
-server.get('/admin/carts', verifyAdminToken, (req, res) => {
-    const query = `SELECT * FROM cart`;
-    db.all(query, (err, rows) => {
-        if (err) {
-            return res.status(500).send("Error retrieving carts: " + err.message);
-        }
-        return res.status(200).json({ carts: rows });
-    });
-});
 
-// View Cart of a Specific User (Admin)
-server.get('/admin/cart/:userID', verifyAdminToken, (req, res) => {
-    const userID = parseInt(req.params.userID, 10);
-    if (isNaN(userID)) {
-        return res.status(400).send("Invalid user ID.");
-    }
-    const query = `SELECT * FROM cart WHERE userID = ?`;
-    db.all(query, [userID], (err, rows) => {
-        if (err) {
-            return res.status(500).send("Error retrieving cart: " + err.message);
-        } else if (rows.length === 0) {
-            return res.status(404).send(`No cart found for user with ID ${userID}.`);
-        }
-        return res.status(200).json({ cart: rows });
-    });
-});
 
-// Delete a Cart (Admin)
-server.delete('/admin/cart/:cartID', verifyAdminToken, (req, res) => {
-    const cartID = parseInt(req.params.cartID, 10);
-    if (isNaN(cartID)) {
-        return res.status(400).send("Invalid cart ID.");
-    }
-    const query = `DELETE FROM cart WHERE cartID = ?`;
-    db.run(query, [cartID], function(err) {
-        if (err) {
-            return res.status(500).send("Error deleting cart: " + err.message);
-        } else if (this.changes === 0) {
-            return res.status(404).send("Cart not found.");
-        }
-        return res.status(200).json({
-            message: "Cart deleted successfully."
-        });
-    });
-});
+
+
+
 
 
 // Add a Review for a Product
