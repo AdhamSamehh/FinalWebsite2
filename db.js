@@ -2,12 +2,20 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('FinalDatabase.db');
 
 const createUsertable = `
-  CREATE TABLE IF NOT EXISTS user (
+  CREATE TABLE IF NOT EXISTS users (
     userID INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL, 
+    username TEXT NOT NULL, 
     email TEXT UNIQUE NOT NULL, 
     password TEXT NOT NULL
     )`;
+
+const createAdminstable = `
+    CREATE TABLE IF NOT EXISTS admins (
+        adminID INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL, 
+        password TEXT NOT NULL
+    );`
 
 
 
@@ -21,19 +29,22 @@ const createProductstable = `
     stockQuantity INTEGER NOT NULL
     )`
 
-
 const createOrderstable = `
-   CREATE TABLE IF NOT EXISTS order (
+   CREATE TABLE IF NOT EXISTS orders (
     orderID INTEGER PRIMARY KEY AUTOINCREMENT,
-    userID INTEGER FOREIGN KEY NOT NULL, 
-    productID INTEGER FOREIGN KEY NOT NULL, 
+    userID INTEGER NOT NULL,
+    productID INTEGER NOT NULL,
     productsQuantity INTEGER NOT NULL,
-    totalAmount INTEGER NOT NULL, 
+    totalAmount INTEGER NOT NULL,
     paymentStatus INTEGER NOT NULL,
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (productID) REFERENCES products(productID)
+);
+
     )`;
 
 const createCartstable = `
-   CREATE TABLE IF NOT EXISTS order (
+   CREATE TABLE IF NOT EXISTS carts (
     cartID INTEGER PRIMARY KEY AUTOINCREMENT,
     userID INTEGER FOREIGN KEY NOT NULL, 
     productID INTEGER FOREIGN KEY NOT NULL, 
@@ -42,15 +53,18 @@ const createCartstable = `
     )`;
 
 const createReviewstable = `
-   CREATE TABLE IF NOT EXISTS order (
+   CREATE TABLE IF NOT EXISTS reviews (
     reviewID INTEGER PRIMARY KEY AUTOINCREMENT,
-    userID INTEGER FOREIGN KEY NOT NULL, 
-    productID INTEGER FOREIGN KEY NOT NULL, 
-    comment INTEGER NOT NULL, 
+    userID INTEGER NOT NULL,
+    productID INTEGER NOT NULL,
+    comment TEXT NOT NULL,
     rating INTEGER NOT NULL,
-    )`;
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (productID) REFERENCES products(productID)
+);
+ )`;
 
 
 
 //To export all tables
-module.exports = { db, createUsertable, createProductstable, createOrderstable, createCartstable, createReviewstable }
+module.exports = { db, createUsertable, createProductstable, createOrderstable, createCartstable, createReviewstable, createAdminstable }
