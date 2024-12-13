@@ -7,8 +7,12 @@ const port = 4444;
 const db_access = require('./db.js')
 const db = db_access.db
 const cookieParser = require('cookie-parser')
+
+server.get("/",(req,res)=>{
+    res.send("Adham")
+})
 server.use(cors({
-    origin: "https://localhost:4444",
+    origin: "http://localhost:4444",
     credentials: true
 }))
 server.use(express.json());
