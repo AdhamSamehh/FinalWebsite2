@@ -8,9 +8,6 @@ const db_access = require('./db.js')
 const db = db_access.db
 const cookieParser = require('cookie-parser')
 
-server.get("/",(req,res)=>{
-    res.send("Adham")
-})
 server.use(cors({
     origin: "http://localhost:4444",
     credentials: true
