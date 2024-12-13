@@ -7,9 +7,8 @@ const port = 4444;
 const db_access = require('./db.js')
 const db = db_access.db
 const cookieParser = require('cookie-parser')
-
 server.use(cors({
-    origin: "http://localhost:4444",
+    origin: "http://localhost:3000",
     credentials: true
 }))
 server.use(express.json());
@@ -140,7 +139,6 @@ server.post('/admin/login', (req, res) => {
         });
     });
 });
-
 
 //User Register
 server.post('/user/register', (req, res) => {
@@ -280,7 +278,6 @@ server.get('/products/search/:id', (req, res) => {
     });
 });
 
-
 // Search for Products
 server.get('/products/search', (req, res) => {
     const { productName, category, quantity } = req.query;
@@ -353,7 +350,6 @@ server.put('/products/buyNow', (req, res) => {
         });
     });
 });
-
 
 // Add a Review for a Product
 server.post('/reviews/add', (req, res) => {
@@ -459,9 +455,6 @@ server.delete('/reviews/delete/:reviewID', (req, res) => {
         });
     });
 });
-
-
-
 
 db.serialize(() => {
     db.run(db_access.createUsertable, (err) => {
