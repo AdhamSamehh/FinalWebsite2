@@ -45,11 +45,23 @@
   margin-left: 5px;
 }
 
-.not-found{
+.notFound{
   display: flex;
   flex-direction: column;
-  align-items: Center;
+  align-items: center;
   justify-content: center;
   color: pink;
   min-height: 80vh;
+  text-align: center;
+  background-color: black;
+}
+
+.notFound h2{
+  font-size: 55px;
+  margin: 0;
+}
+
+.notFound p{
+  font-size:20px;
+  margin: 0;
 }
